@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Injecting req.user for role simulation (via query param)
+// Simulate user injection via ?role= query string
 app.use((req, res, next) => {
   const role = req.query.role;
   if (role) {
@@ -21,15 +21,11 @@ app.use((req, res, next) => {
 const clientRoutes = require('./routes/clients');
 app.use('/client', clientRoutes);
 
-// Optional placeholders for other routes
-// const adminRoutes = require('./routes/admins');
-// const employeeRoutes = require('./routes/employees');
-// const caseRoutes = require('./routes/cases');
-
+// Root endpoint
 app.get('/', (req, res) => {
-  res.json({ message: 'IronLink Backend Live', role: req.user?.role || 'none' });
+  res.json({ message: 'IronLink CRM backend is live', role: req.user?.role || 'guest' });
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Backend running on port ${PORT}`);
 });
