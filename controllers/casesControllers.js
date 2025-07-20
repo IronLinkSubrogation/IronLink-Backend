@@ -32,4 +32,33 @@ function createCase(req, res) {
   };
   cases.push(newCase);
   writeCases(cases);
-  res.status
+  res.status(201).json(newCase);
+}
+
+function updateCase(req, res) {
+  const cases = readCases();
+  const index = cases.findIndex(c => c.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'Case not found.' });
+
+  cases[index] = { ...cases[index], ...req.body };
+  writeCases(cases);
+  res.json(cases[index]);
+}
+
+function deleteCase(req, res) {
+  const cases = readCases();
+  const index = cases.findIndex(c => c.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'Case not found.' });
+
+  const removed = cases.splice(index, 1)[0];
+  writeCases(cases);
+  res.json(removed);
+}
+
+module.exports = {
+  getCases,
+  getCaseById,
+  createCase,
+  updateCase,
+  deleteCase
+};
