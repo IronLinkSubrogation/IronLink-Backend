@@ -1,0 +1,30 @@
+[
+  {
+    "id": "3001",
+    "client": "Pacific Liability Recovery",
+    "type": "Auto Subrogation",
+    "status": "Open",
+    "assignedTo": "Vanessa Cruz",
+    "dateOpened": "2025-07-01",
+    "notes": "Initial claim received. Liability verified. Awaiting payout data."
+  },
+  {
+    "id": "3002",
+    "client": "Valor Claims Group",
+    "type": "Property Loss",
+    "status": "Pending",
+    "assignedTo": "Joel Thomas",
+    "dateOpened": "2025-06-15",
+    "notes": "Water damage dispute with third party. Investigation pending."
+  },
+  {
+    "id": "3003",
+    "client": "Pacific Liability Recovery",
+    "type": "MedPay Recovery",
+    "status": "Closed",
+    "assignedTo": "Vanessa Cruz",
+    "dateOpened": "2025-05-10",
+    "dateClosed": "2025-06-01",
+    "notes": "Recovered full amount. Documentation archived."
+  }
+]
