@@ -4,11 +4,11 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Global Middleware
+// Apply global middleware
 app.use(cors());
 app.use(express.json());
 
-// Simulated role injection via query string (?role=admin)
+// Simulate user roles via query string (e.g., ?role=admin)
 app.use((req, res, next) => {
   const role = req.query.role;
   if (role) {
@@ -17,19 +17,19 @@ app.use((req, res, next) => {
   next();
 });
 
-// Route Modules
+// Import route modules
 const clientRoutes = require('./routes/clients');
 const employeeRoutes = require('./routes/employees');
 const adminRoutes = require('./routes/admins');
 const caseRoutes = require('./routes/cases');
 
-// Route Wiring
+// Wire routes
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
 app.use('/case', caseRoutes);
 
-// Root Endpoint
+// Health check / root endpoint
 app.get('/', (req, res) => {
   res.json({
     message: 'IronLink CRM backend is live',
@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Start Server
+// Launch server
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
