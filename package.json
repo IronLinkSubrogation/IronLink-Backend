@@ -1,7 +1,7 @@
 {
   "name": "ironlink-crm-backend",
   "version": "1.0.0",
-  "description": "Modular backend for IronLink Subrogation CRM",
+  "description": "Cloud-only backend for IronLink Subrogation CRM",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
