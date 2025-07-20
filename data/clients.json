@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1001",
+    "name": "Pacific Liability Recovery",
+    "industry": "Insurance",
+    "contact": "Brenda Hopkins",
+    "email": "brenda@pacificliability.com",
+    "status": "Active"
+  },
+  {
+    "id": "1002",
+    "name": "Valor Claims Group",
+    "industry": "Subrogation",
+    "contact": "Marcus Avery",
+    "email": "marcus@valorclaims.com",
+    "status": "Prospect"
+  }
+]
