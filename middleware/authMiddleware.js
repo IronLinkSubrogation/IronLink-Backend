@@ -1,8 +1,8 @@
 // middleware/authMiddleware.js
 
 /**
- * Simulated auth middleware.
- * Injects req.user from server.js or test query (?role=admin).
+ * Middleware to simulate user authentication.
+ * Assumes req.user is injected earlier (e.g. via ?role=admin in query).
  */
 function protect(req, res, next) {
   if (!req.user) {
@@ -12,7 +12,7 @@ function protect(req, res, next) {
 }
 
 /**
- * Factory for role-based authorization middleware.
+ * Middleware factory for role-based access control.
  * Usage: authorizeRole(['admin', 'employee'])
  */
 function authorizeRole(allowedRoles) {
