@@ -9,18 +9,19 @@ app.use(cors());
 app.use(express.json());
 
 // 🛣️ Route Imports
-const authRoutes             = require('./routes/auth');              // login
-const sessionRoutes          = require('./routes/session');           // role introspection
-const auditRoutes            = require('./routes/audit');             // activity logs
-const backupRoutes           = require('./routes/backup');            // data export
-const summaryRoutes          = require('./routes/summary');           // record counts, status, deltas
-const summaryFollowupsRoutes = require('./routes/summaryFollowups');  // follow-up metrics
-const diaryRoutes            = require('./routes/diary');             // diary logic (overdue, upcoming)
+const authRoutes                   = require('./routes/auth');                   // login
+const sessionRoutes                = require('./routes/session');                // role introspection
+const auditRoutes                  = require('./routes/audit');                  // logs
+const backupRoutes                 = require('./routes/backup');                 // data exports
+const summaryRoutes                = require('./routes/summary');                // record counts, status, deltas
+const summaryFollowupsRoutes       = require('./routes/summaryFollowups');       // follow-up metrics
+const summaryFollowupsStatusRoutes = require('./routes/summaryFollowupsStatus'); // follow-up breakdowns by case status
+const diaryRoutes                  = require('./routes/diary');                  // diary logic
 
-const clientRoutes           = require('./routes/clients');
-const employeeRoutes         = require('./routes/employees');
-const adminRoutes            = require('./routes/admins');
-const caseRoutes             = require('./routes/cases');
+const clientRoutes                 = require('./routes/clients');
+const employeeRoutes               = require('./routes/employees');
+const adminRoutes                  = require('./routes/admins');
+const caseRoutes                   = require('./routes/cases');
 
 // 🔗 Mount Routes
 app.use('/auth', authRoutes);
@@ -29,6 +30,7 @@ app.use('/audit', auditRoutes);
 app.use('/backup', backupRoutes);
 app.use('/summary', summaryRoutes);
 app.use('/summary/followups', summaryFollowupsRoutes);
+app.use('/summary/followups/status', summaryFollowupsStatusRoutes);
 app.use('/case/diary', diaryRoutes);
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
