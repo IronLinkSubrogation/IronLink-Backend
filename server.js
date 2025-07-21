@@ -4,34 +4,35 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 🌐 Global Middleware
+// 🌐 Middleware
 app.use(cors());
 app.use(express.json());
 
 // 🛣️ Route Imports
-const authRoutes     = require('./routes/auth');        // Login
-const sessionRoutes  = require('./routes/session');     // Role introspection
-const auditRoutes    = require('./routes/audit');       // Activity logs
-const backupRoutes   = require('./routes/backup');      // Data exports
-const summaryRoutes  = require('./routes/summary');     // Record counts
+const authRoutes      = require('./routes/auth');
+const sessionRoutes   = require('./routes/session');
+const auditRoutes     = require('./routes/audit');
+const backupRoutes    = require('./routes/backup');
+const summaryRoutes   = require('./routes/summary');
+const diaryRoutes     = require('./routes/diary');      // 🔔 Diary system
+const clientRoutes    = require('./routes/clients');
+const employeeRoutes  = require('./routes/employees');
+const adminRoutes     = require('./routes/admins');
+const caseRoutes      = require('./routes/cases');
 
-const clientRoutes   = require('./routes/clients');
-const employeeRoutes = require('./routes/employees');
-const adminRoutes    = require('./routes/admins');      // Confirm filename
-const caseRoutes     = require('./routes/cases');
-
-// 🔗 Route Wiring
+// 🔗 Mount Routes
 app.use('/auth', authRoutes);
 app.use('/session', sessionRoutes);
 app.use('/audit', auditRoutes);
 app.use('/backup', backupRoutes);
-app.use('/summary', summaryRoutes);       // ✅ New dashboard metrics route
+app.use('/summary', summaryRoutes);
+app.use('/case/diary', diaryRoutes);   // 📅 Follow-up endpoints
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
 app.use('/case', caseRoutes);
 
-// 🧪 Health Check Endpoint
+// 🧪 Health Check
 app.get('/', (req, res) => {
   const role = req.headers['x-user-role'];
   res.json({
