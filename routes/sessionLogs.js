@@ -7,10 +7,11 @@ const { protect, authorizeRole } = require('../middleware/authMiddleware');
 
 const logPath = path.join(__dirname, '../logs/activity.json');
 
+// 🔐 Protect route with role-based access
 router.use(protect);
-router.use(authorizeRole(['admin'])); // Restrict access to admin users only
+router.use(authorizeRole(['admin'])); // Only admins see full session audit
 
-// ✅ GET /session/logs → View session activity
+// ✅ GET /session/logs → Filter login/session events from audit log
 router.get('/', (req, res) => {
   const logs = fs.existsSync(logPath)
     ? JSON.parse(fs.readFileSync(logPath, 'utf-8'))
