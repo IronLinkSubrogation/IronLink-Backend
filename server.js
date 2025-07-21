@@ -8,24 +8,23 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// 🔐 Role-based protection now handled via headers ("x-user-role")
-// Removed query-based injection
-
-// 📦 Import Route Modules
-const authRoutes     = require('./routes/auth');         // Handles login
+// 🛣️ Route Imports
+const authRoutes     = require('./routes/auth');       // login endpoint
+const sessionRoutes  = require('./routes/session');    // introspection endpoint
 const clientRoutes   = require('./routes/clients');
 const employeeRoutes = require('./routes/employees');
-const adminRoutes    = require('./routes/admins');        // Make sure this matches filename
+const adminRoutes    = require('./routes/admins');     // confirm file name matches
 const caseRoutes     = require('./routes/cases');
 
 // 🔗 Mount Routes
 app.use('/auth', authRoutes);
+app.use('/session', sessionRoutes);
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
 app.use('/case', caseRoutes);
 
-// 🧪 Root Health Check
+// 🧪 Health Check Endpoint
 app.get('/', (req, res) => {
   const role = req.headers['x-user-role'];
   res.json({
@@ -34,7 +33,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// 💥 Global Error Handler
+// 💥 Global Error Boundary
 app.use((err, req, res, next) => {
   console.error('💥 Server Error:', err.stack);
   res.status(500).json({ error: 'Internal server error.' });
