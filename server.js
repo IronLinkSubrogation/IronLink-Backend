@@ -10,23 +10,23 @@ app.use(express.json());
 // 🛣️ Route Imports
 const authRoutes                    = require('./routes/auth');
 const sessionRoutes                 = require('./routes/session');
-const sessionLogsRoutes             = require('./routes/sessionLogs');             // 👥 session audits
+const sessionLogsRoutes             = require('./routes/sessionLogs');
 const auditRoutes                   = require('./routes/audit');
 const backupRoutes                  = require('./routes/backup');
 
-// 🔹 Summary Logic
 const summaryRoutes                 = require('./routes/summary');
-const summaryFollowupsRoutes        = require('./routes/summaryFollowups');        // 📅 follow-up counts
-const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus');  // 📊 status breakdown
+const summaryFollowupsRoutes        = require('./routes/summaryFollowups');
+const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus');
 
-// 🔹 Case Logic
-const diaryRoutes                   = require('./routes/diary');                   // 📅 daily diary
-const caseRoutes                    = require('./routes/cases');                   // CRUD + notes trail
+const diaryRoutes                   = require('./routes/diary');
+const caseRoutes                    = require('./routes/cases');
 
-// 🔹 Core Entities
 const clientRoutes                  = require('./routes/clients');
 const employeeRoutes                = require('./routes/employees');
 const adminRoutes                   = require('./routes/admins');
+
+const uiActionsRoutes               = require('./routes/uiActions');
+const uiCaseActionsRoutes           = require('./routes/uiCaseActions');
 
 // 🔗 Mount Routes
 app.use('/auth', authRoutes);
@@ -40,11 +40,14 @@ app.use('/summary/followups', summaryFollowupsRoutes);
 app.use('/summary/followups/status', summaryFollowupsStatusRoutes);
 
 app.use('/case/diary', diaryRoutes);
-app.use('/case', caseRoutes); // CRUD and notes
+app.use('/case', caseRoutes);
 
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
+
+app.use('/ui/actions', uiActionsRoutes);
+app.use('/ui/case-actions', uiCaseActionsRoutes);
 
 // 🧪 Health Check
 app.get('/', (req, res) => {
@@ -61,7 +64,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error.' });
 });
 
-// 🚀 Server Start
+// 🚀 Start Server
 app.listen(PORT, () => {
   console.log(`🚀 IronLink backend running on port ${PORT}`);
 });
