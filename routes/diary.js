@@ -3,63 +3,36 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
-const { protect, authorizeRole } = require('../middleware/authMiddleware');
 
-const dataPath = path.join(__dirname, '../data/cases.json');
+const { protect, authorizeRole } = require('../middleware/authMiddleware');
+const casePath = path.join(__dirname, '../data/cases.json');
 
 router.use(protect);
-router.use(authorizeRole(['admin', 'employee']));
+router.use(authorizeRole(['admin', 'employee'])); // 📅 diary is employee-accessible
 
-// ✅ GET /case/diary → cases needing follow-up before specified date
+// 🔹 GET /case/diary?day=2025-07-21 → returns cases with follow-up set for that day
 router.get('/', (req, res) => {
-  const { before } = req.query;
-  if (!before) return res.status(400).json({ error: 'Missing ?before=YYYY-MM-DD' });
-
-  const cases = fs.existsSync(dataPath)
-    ? JSON.parse(fs.readFileSync(dataPath, 'utf-8'))
+  const cases = fs.existsSync(casePath)
+    ? JSON.parse(fs.readFileSync(casePath, 'utf-8'))
     : [];
 
-  const filtered = cases.filter(c => {
+  const queryDay = req.query.day
+    ? new Date(req.query.day)
+    : new Date();
+
+  const targetDate = queryDay.toISOString().split('T')[0];
+
+  const matches = cases.filter(c => {
     if (!c.followUpDate) return false;
-    return new Date(c.followUpDate) <= new Date(before);
+    const followUpDate = new Date(c.followUpDate).toISOString().split('T')[0];
+    return followUpDate === targetDate;
   });
 
-  res.json(filtered);
-});
-
-// ✅ GET /case/diary/overdue → cases past due follow-up
-router.get('/overdue', (req, res) => {
-  const now = new Date();
-  const cases = fs.existsSync(dataPath)
-    ? JSON.parse(fs.readFileSync(dataPath, 'utf-8'))
-    : [];
-
-  const overdue = cases.filter(c => {
-    if (!c.followUpDate) return false;
-    return new Date(c.followUpDate) < now;
+  res.json({
+    date: targetDate,
+    matchCount: matches.length,
+    cases: matches
   });
-
-  res.json(overdue);
-});
-
-// ✅ GET /case/diary/upcoming?within=7 → next X days follow-up
-router.get('/upcoming', (req, res) => {
-  const days = parseInt(req.query.within) || 7;
-  const now = new Date();
-  const future = new Date();
-  future.setDate(now.getDate() + days);
-
-  const cases = fs.existsSync(dataPath)
-    ? JSON.parse(fs.readFileSync(dataPath, 'utf-8'))
-    : [];
-
-  const upcoming = cases.filter(c => {
-    if (!c.followUpDate) return false;
-    const follow = new Date(c.followUpDate);
-    return follow >= now && follow <= future;
-  });
-
-  res.json(upcoming);
 });
 
 module.exports = router;
