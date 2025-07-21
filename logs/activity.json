@@ -1,1 +1,19 @@
-[]
+const { logActivity } = require('../utils/logger');
+
+function createCase(req, res) {
+  const cases = readCases();
+  const newCase = {
+    id: Date.now().toString(),
+    ...req.body
+  };
+  cases.push(newCase);
+  writeCases(cases);
+
+  logActivity({
+    action: 'CREATE_CASE',
+    role: req.user?.role || 'unknown',
+    endpoint: req.originalUrl
+  });
+
+  res.status(201).json(newCase);
+}
