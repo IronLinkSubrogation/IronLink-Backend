@@ -20,7 +20,7 @@ const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus')
 const diaryRoutes                   = require('./routes/diary');
 const caseNotesRoutes               = require('./routes/caseNotes');               // 📝 notes trail
 const caseRoutes                    = require('./routes/cases');
-
+const summaryFollowupsRoutes        = require('./routes/summaryFollowups');
 const clientRoutes                  = require('./routes/clients');
 const employeeRoutes                = require('./routes/employees');
 const adminRoutes                   = require('./routes/admins');
