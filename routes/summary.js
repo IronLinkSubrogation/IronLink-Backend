@@ -5,11 +5,11 @@ const fs = require('fs');
 const path = require('path');
 const { protect, authorizeRole } = require('../middleware/authMiddleware');
 
-// 🔐 Restrict access to admins only
+// 🔐 Admin-only access
 router.use(protect);
 router.use(authorizeRole(['admin']));
 
-// ✅ Helper to count flat-file records
+// 📁 Utility: Count records in a file
 function countRecords(filePath) {
   const fullPath = path.join(__dirname, filePath);
   if (!fs.existsSync(fullPath)) return 0;
@@ -17,9 +17,9 @@ function countRecords(filePath) {
   return Array.isArray(data) ? data.length : 0;
 }
 
-// ✅ GET /summary — total record counts
+// ✅ GET /summary → total record counts
 router.get('/', (req, res) => {
-  const counts = {
+  const summary = {
     clients:   countRecords('../data/clients.json'),
     cases:     countRecords('../data/cases.json'),
     employees: countRecords('../data/employees.json'),
@@ -28,17 +28,17 @@ router.get('/', (req, res) => {
 
   res.json({
     timestamp: new Date().toISOString(),
-    summary: counts
+    summary
   });
 });
 
-// ✅ GET /summary/status — case & client status breakdowns
+// 📊 GET /summary/status → status breakdowns
 router.get('/status', (req, res) => {
-  const casePath   = path.join(__dirname, '../data/cases.json');
-  const clientPath = path.join(__dirname, '../data/clients.json');
+  const casesPath   = path.join(__dirname, '../data/cases.json');
+  const clientsPath = path.join(__dirname, '../data/clients.json');
 
-  const cases   = fs.existsSync(casePath)   ? JSON.parse(fs.readFileSync(casePath, 'utf-8')) : [];
-  const clients = fs.existsSync(clientPath) ? JSON.parse(fs.readFileSync(clientPath, 'utf-8')) : [];
+  const cases   = fs.existsSync(casesPath)   ? JSON.parse(fs.readFileSync(casesPath, 'utf-8'))   : [];
+  const clients = fs.existsSync(clientsPath) ? JSON.parse(fs.readFileSync(clientsPath, 'utf-8')) : [];
 
   const caseStatus = cases.reduce((acc, c) => {
     const status = c.status?.toLowerCase() || 'unknown';
@@ -60,6 +60,39 @@ router.get('/status', (req, res) => {
     breakdown: {
       caseStatus,
       clientStatus
+    }
+  });
+});
+
+// 📈 GET /summary/deltas → new records in last 7 days
+router.get('/deltas', (req, res) => {
+  const threshold = new Date();
+  threshold.setDate(threshold.getDate() - 7); // Look back 7 days
+
+  function loadRecent(pathToFile) {
+    const fullPath = path.join(__dirname, pathToFile);
+    if (!fs.existsSync(fullPath)) return 0;
+
+    const records = JSON.parse(fs.readFileSync(fullPath, 'utf-8'));
+    return records.filter(item => {
+      const dateStr = item.createdAt || item.timestamp || item.date;
+      const date = new Date(dateStr);
+      return date > threshold;
+    }).length;
+  }
+
+  const deltas = {
+    cases:     loadRecent('../data/cases.json'),
+    clients:   loadRecent('../data/clients.json'),
+    employees: loadRecent('../data/employees.json')
+  };
+
+  res.json({
+    timestamp: new Date().toISOString(),
+    deltas,
+    range: {
+      since: threshold.toISOString(),
+      interval: 'last 7 days'
     }
   });
 });
