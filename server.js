@@ -9,16 +9,18 @@ app.use(cors());
 app.use(express.json());
 
 // 🛣️ Route Imports
-const authRoutes      = require('./routes/auth');
-const sessionRoutes   = require('./routes/session');
-const auditRoutes     = require('./routes/audit');
-const backupRoutes    = require('./routes/backup');
-const summaryRoutes   = require('./routes/summary');
-const diaryRoutes     = require('./routes/diary');      // 🔔 Diary system
-const clientRoutes    = require('./routes/clients');
-const employeeRoutes  = require('./routes/employees');
-const adminRoutes     = require('./routes/admins');
-const caseRoutes      = require('./routes/cases');
+const authRoutes             = require('./routes/auth');              // login
+const sessionRoutes          = require('./routes/session');           // role introspection
+const auditRoutes            = require('./routes/audit');             // activity logs
+const backupRoutes           = require('./routes/backup');            // data export
+const summaryRoutes          = require('./routes/summary');           // record counts, status, deltas
+const summaryFollowupsRoutes = require('./routes/summaryFollowups');  // follow-up metrics
+const diaryRoutes            = require('./routes/diary');             // diary logic (overdue, upcoming)
+
+const clientRoutes           = require('./routes/clients');
+const employeeRoutes         = require('./routes/employees');
+const adminRoutes            = require('./routes/admins');
+const caseRoutes             = require('./routes/cases');
 
 // 🔗 Mount Routes
 app.use('/auth', authRoutes);
@@ -26,13 +28,14 @@ app.use('/session', sessionRoutes);
 app.use('/audit', auditRoutes);
 app.use('/backup', backupRoutes);
 app.use('/summary', summaryRoutes);
-app.use('/case/diary', diaryRoutes);   // 📅 Follow-up endpoints
+app.use('/summary/followups', summaryFollowupsRoutes);
+app.use('/case/diary', diaryRoutes);
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
 app.use('/case', caseRoutes);
 
-// 🧪 Health Check
+// 🧪 Health Check Endpoint
 app.get('/', (req, res) => {
   const role = req.headers['x-user-role'];
   res.json({
