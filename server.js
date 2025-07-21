@@ -11,19 +11,21 @@ app.use(express.json());
 // 🛣️ Route Imports
 const authRoutes     = require('./routes/auth');        // Login
 const sessionRoutes  = require('./routes/session');     // Role introspection
-const auditRoutes    = require('./routes/audit');       // Activity log viewer/export
-const backupRoutes   = require('./routes/backup');      // Data export endpoints
+const auditRoutes    = require('./routes/audit');       // Activity logs
+const backupRoutes   = require('./routes/backup');      // Data exports
+const summaryRoutes  = require('./routes/summary');     // Record counts
 
 const clientRoutes   = require('./routes/clients');
 const employeeRoutes = require('./routes/employees');
-const adminRoutes    = require('./routes/admins');      // Ensure file is named exactly as imported
+const adminRoutes    = require('./routes/admins');      // Confirm filename
 const caseRoutes     = require('./routes/cases');
 
-// 🔗 Mount Routes
+// 🔗 Route Wiring
 app.use('/auth', authRoutes);
 app.use('/session', sessionRoutes);
 app.use('/audit', auditRoutes);
 app.use('/backup', backupRoutes);
+app.use('/summary', summaryRoutes);       // ✅ New dashboard metrics route
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
