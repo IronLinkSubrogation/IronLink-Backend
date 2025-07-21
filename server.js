@@ -11,21 +11,21 @@ app.use(express.json());
 // 🛣️ Route Imports
 const authRoutes                    = require('./routes/auth');                   // login
 const sessionRoutes                 = require('./routes/session');                // role introspection
-const sessionLogsRoutes             = require('./routes/sessionLogs');            // session event logs
-const auditRoutes                   = require('./routes/audit');                  // activity logs
-const backupRoutes                  = require('./routes/backup');                 // data exports
-const summaryRoutes                 = require('./routes/summary');                // counts, status, deltas
-const summaryFollowupsRoutes        = require('./routes/summaryFollowups');       // diary summary
-const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus'); // follow-up breakdown by status
-const diaryRoutes                   = require('./routes/diary');                  // case follow-up logic
-const caseNotesRoutes               = require('./routes/caseNotes');              // per-case notes trail
+const sessionLogsRoutes             = require('./routes/sessionLogs');            // session audit viewer
+const auditRoutes                   = require('./routes/audit');                  // action logs
+const backupRoutes                  = require('./routes/backup');                 // full record exports
+const summaryRoutes                 = require('./routes/summary');                // record totals, status, deltas
+const summaryFollowupsRoutes        = require('./routes/summaryFollowups');       // diary metrics
+const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus'); // breakdown by status
+const diaryRoutes                   = require('./routes/diary');                  // follow-up filters
+const caseNotesRoutes               = require('./routes/caseNotes');              // per-case comment trail
 
 const clientRoutes                  = require('./routes/clients');
 const employeeRoutes                = require('./routes/employees');
 const adminRoutes                   = require('./routes/admins');
 const caseRoutes                    = require('./routes/cases');
 
-// 🔗 Mount Routes
+// 🔗 Route Wiring
 app.use('/auth', authRoutes);
 app.use('/session', sessionRoutes);
 app.use('/session/logs', sessionLogsRoutes);
@@ -35,8 +35,8 @@ app.use('/summary', summaryRoutes);
 app.use('/summary/followups', summaryFollowupsRoutes);
 app.use('/summary/followups/status', summaryFollowupsStatusRoutes);
 app.use('/case/diary', diaryRoutes);
-app.use('/case', caseNotesRoutes); // 📝 Extends /case for notes
-app.use('/case', caseRoutes);      // CRUD endpoints
+app.use('/case', caseNotesRoutes); // 📝 Notes trail
+app.use('/case', caseRoutes);      // Core case routing
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
@@ -56,7 +56,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error.' });
 });
 
-// 🚀 Launch Server
+// 🚀 Start Server
 app.listen(PORT, () => {
   console.log(`🚀 IronLink backend running on port ${PORT}`);
 });
