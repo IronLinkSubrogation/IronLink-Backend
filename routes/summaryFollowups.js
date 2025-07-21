@@ -1,4 +1,4 @@
-// routes/summaryFollowups.js
+// routes/summaryFollowupsStatus.js
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
@@ -6,7 +6,7 @@ const path = require('path');
 const { protect, authorizeRole } = require('../middleware/authMiddleware');
 
 router.use(protect);
-router.use(authorizeRole(['admin'])); // restrict to admin summary access
+router.use(authorizeRole(['admin']));
 
 const casePath = path.join(__dirname, '../data/cases.json');
 
@@ -16,33 +16,34 @@ router.get('/', (req, res) => {
     : [];
 
   const now = new Date();
-  const upcomingDays = parseInt(req.query.within) || 7;
+  const upcomingWindow = parseInt(req.query.within) || 7;
   const upcomingThreshold = new Date();
-  upcomingThreshold.setDate(now.getDate() + upcomingDays);
+  upcomingThreshold.setDate(now.getDate() + upcomingWindow);
 
-  let overdue = 0;
-  let upcoming = 0;
-  let missing = 0;
+  const breakdown = {};
 
   cases.forEach(c => {
-    if (!c.followUpDate) {
-      missing++;
-    } else {
-      const date = new Date(c.followUpDate);
-      if (date < now) overdue++;
-      else if (date >= now && date <= upcomingThreshold) upcoming++;
+    const status = (c.status || 'unknown').toLowerCase();
+    const followUp = c.followUpDate ? new Date(c.followUpDate) : null;
+
+    if (!breakdown[status]) {
+      breakdown[status] = { overdue: 0, upcoming: 0, missing: 0 };
+    }
+
+    if (!followUp) {
+      breakdown[status].missing++;
+    } else if (followUp < now) {
+      breakdown[status].overdue++;
+    } else if (followUp >= now && followUp <= upcomingThreshold) {
+      breakdown[status].upcoming++;
     }
   });
 
   res.json({
     timestamp: new Date().toISOString(),
-    followUps: {
-      overdue,
-      upcoming,
-      missing
-    },
+    followUps: breakdown,
     range: {
-      upcomingWindow: `${upcomingDays} days`,
+      upcomingWindow: `${upcomingWindow} days`,
       referenceDate: now.toISOString()
     }
   });
