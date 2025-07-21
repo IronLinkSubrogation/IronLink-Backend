@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -14,13 +13,17 @@ const sessionRoutes                 = require('./routes/session');
 const sessionLogsRoutes             = require('./routes/sessionLogs');             // 👥 session audits
 const auditRoutes                   = require('./routes/audit');
 const backupRoutes                  = require('./routes/backup');
+
+// 🔹 Summary Logic
 const summaryRoutes                 = require('./routes/summary');
 const summaryFollowupsRoutes        = require('./routes/summaryFollowups');        // 📅 follow-up counts
-const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus');  // 📊 breakdown by status
-const diaryRoutes                   = require('./routes/diary');
-const caseNotesRoutes               = require('./routes/caseNotes');               // 📝 notes trail
-const caseRoutes                    = require('./routes/cases');
+const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus');  // 📊 status breakdown
 
+// 🔹 Case Logic
+const diaryRoutes                   = require('./routes/diary');                   // 📅 daily diary
+const caseRoutes                    = require('./routes/cases');                   // CRUD + notes trail
+
+// 🔹 Core Entities
 const clientRoutes                  = require('./routes/clients');
 const employeeRoutes                = require('./routes/employees');
 const adminRoutes                   = require('./routes/admins');
@@ -31,12 +34,14 @@ app.use('/session', sessionRoutes);
 app.use('/session/logs', sessionLogsRoutes);
 app.use('/audit', auditRoutes);
 app.use('/backup', backupRoutes);
+
 app.use('/summary', summaryRoutes);
 app.use('/summary/followups', summaryFollowupsRoutes);
 app.use('/summary/followups/status', summaryFollowupsStatusRoutes);
+
 app.use('/case/diary', diaryRoutes);
-app.use('/case', caseNotesRoutes); // POST /case/:id/notes
-app.use('/case', caseRoutes);      // Case CRUD
+app.use('/case', caseRoutes); // CRUD and notes
+
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
