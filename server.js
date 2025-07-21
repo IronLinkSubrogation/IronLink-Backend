@@ -3,49 +3,67 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 🌐 Middleware
+// 🌐 Core Middleware
 app.use(cors());
 app.use(express.json());
 
 // 🛣️ Route Imports
-const authRoutes                    = require('./routes/auth');
-const sessionRoutes                 = require('./routes/session');
-const sessionLogsRoutes             = require('./routes/sessionLogs');
-const auditRoutes                   = require('./routes/audit');
-const backupRoutes                  = require('./routes/backup');
 
+// 🔐 Auth & Sessions
+const authRoutes            = require('./routes/auth');
+const sessionRoutes         = require('./routes/session');
+const sessionLogsRoutes     = require('./routes/sessionLogs');
+
+// 🛠️ Admin Operations
+const auditRoutes           = require('./routes/audit');
+const backupRoutes          = require('./routes/backup');
+
+// 📊 Summary & Dashboard
 const summaryRoutes                 = require('./routes/summary');
 const summaryFollowupsRoutes        = require('./routes/summaryFollowups');
 const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus');
+const uiSummaryDashboardRoutes      = require('./routes/uiSummaryDashboard');
 
-const diaryRoutes                   = require('./routes/diary');
-const caseRoutes                    = require('./routes/cases');
+// 📁 Case Management
+const caseRoutes            = require('./routes/cases');
+const diaryRoutes           = require('./routes/diary');
 
-const clientRoutes                  = require('./routes/clients');
-const employeeRoutes                = require('./routes/employees');
-const adminRoutes                   = require('./routes/admins');
+// 👥 Role-Based Entities
+const clientRoutes          = require('./routes/clients');
+const employeeRoutes        = require('./routes/employees');
+const adminRoutes           = require('./routes/admins');
 
-const uiActionsRoutes               = require('./routes/uiActions');
-const uiCaseActionsRoutes           = require('./routes/uiCaseActions');
+// 🧩 UI Actions
+const uiActionsRoutes       = require('./routes/uiActions');
+const uiCaseActionsRoutes   = require('./routes/uiCaseActions');
 
 // 🔗 Mount Routes
+
+// Auth & Session
 app.use('/auth', authRoutes);
 app.use('/session', sessionRoutes);
 app.use('/session/logs', sessionLogsRoutes);
+
+// Admin Tools
 app.use('/audit', auditRoutes);
 app.use('/backup', backupRoutes);
 
+// Summary Dashboard
 app.use('/summary', summaryRoutes);
 app.use('/summary/followups', summaryFollowupsRoutes);
 app.use('/summary/followups/status', summaryFollowupsStatusRoutes);
+app.use('/summary/dashboard', uiSummaryDashboardRoutes);
 
-app.use('/case/diary', diaryRoutes);
+// Case Logic
 app.use('/case', caseRoutes);
+app.use('/case/diary', diaryRoutes);
 
+// Role Entities
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
 
+// UI Routes
 app.use('/ui/actions', uiActionsRoutes);
 app.use('/ui/case-actions', uiCaseActionsRoutes);
 
@@ -53,18 +71,19 @@ app.use('/ui/case-actions', uiCaseActionsRoutes);
 app.get('/', (req, res) => {
   const role = req.headers['x-user-role'];
   res.json({
+    status: 'OK',
     message: 'IronLink CRM backend is live',
     role: role || 'guest'
   });
 });
 
-// 💥 Error Handling
+// 💥 Global Error Handler
 app.use((err, req, res, next) => {
   console.error('💥 Server Error:', err.stack);
   res.status(500).json({ error: 'Internal server error.' });
 });
 
-// 🚀 Start Server
+// 🚀 Boot Server
 app.listen(PORT, () => {
   console.log(`🚀 IronLink backend running on port ${PORT}`);
 });
