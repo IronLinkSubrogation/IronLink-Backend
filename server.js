@@ -3,13 +3,13 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 🌐 Middleware
+// 🌐 Global Middleware
 app.use(cors());
 app.use(express.json());
 
 // 🛣️ Route Imports
 
-// 🔐 Auth & Sessions
+// 🔐 Auth / Session
 const authRoutes                    = require('./routes/auth');
 const sessionRoutes                 = require('./routes/session');
 const sessionLogsRoutes             = require('./routes/sessionLogs');
@@ -18,7 +18,7 @@ const sessionLogsRoutes             = require('./routes/sessionLogs');
 const auditRoutes                   = require('./routes/audit');
 const backupRoutes                  = require('./routes/backup');
 
-// 📊 Summary Views
+// 📊 Summary & Dashboard
 const summaryRoutes                 = require('./routes/summary');
 const summaryFollowupsRoutes        = require('./routes/summaryFollowups');
 const summaryFollowupsStatusRoutes  = require('./routes/summaryFollowupsStatus');
@@ -28,7 +28,7 @@ const uiSummaryDashboardRoutes      = require('./routes/uiSummaryDashboard');
 const caseRoutes                    = require('./routes/cases');
 const diaryRoutes                   = require('./routes/diary');
 
-// 👥 Role-Based Entities
+// 👥 Role Entities
 const clientRoutes                  = require('./routes/clients');
 const employeeRoutes                = require('./routes/employees');
 const adminRoutes                   = require('./routes/admins');
@@ -39,26 +39,26 @@ const uiCaseActionsRoutes           = require('./routes/uiCaseActions');
 
 // 🔗 Mount Routes
 
-// Auth / Sessions
+// Auth & Session
 app.use('/auth', authRoutes);
 app.use('/session', sessionRoutes);
 app.use('/session/logs', sessionLogsRoutes);
 
-// Admin Controls
+// Admin Operations
 app.use('/audit', auditRoutes);
 app.use('/backup', backupRoutes);
 
-// Summary & Dashboard
+// Summary Logic
 app.use('/summary', summaryRoutes);
 app.use('/summary/followups', summaryFollowupsRoutes);
 app.use('/summary/followups/status', summaryFollowupsStatusRoutes);
 app.use('/summary/dashboard', uiSummaryDashboardRoutes);
 
-// Case Logic
+// Case Routes
 app.use('/case', caseRoutes);
 app.use('/case/diary', diaryRoutes);
 
-// Entities
+// Entity Routes
 app.use('/client', clientRoutes);
 app.use('/employee', employeeRoutes);
 app.use('/admin', adminRoutes);
@@ -77,13 +77,13 @@ app.get('/', (req, res) => {
   });
 });
 
-// 💥 Global Error Handler
+// 💥 Error Handler
 app.use((err, req, res, next) => {
   console.error('💥 Server Error:', err.stack);
   res.status(500).json({ error: 'Internal server error.' });
 });
 
-// 🚀 Launch Server
+// 🚀 Boot Server
 app.listen(PORT, () => {
   console.log(`🚀 IronLink backend running on port ${PORT}`);
 });
